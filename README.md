@@ -34,6 +34,29 @@ El backend fue construido con una arquitectura en capas (Layered Architecture) e
 2.  **Mapa de Acciones:** en un inicio como se habia planteado un solo lenguaje de migracion se tenia un `switch` pero al agregar mas funcionalidades y lenguajes este fue aumentando de tamaño lo que hace que a futuro no sea manejable, por esto se usa un diccionario de funciones `O(1)`.
 3.  **Separacion de Responsabilidades:** Division de Rutas, Controladores, Servicios.
 
+``mermaid
+graph TD
+    A[Envía solicitud] --> B[Recibe solicitud]
+    B --> C{¿TPS ≤ 5?}
+    C -->|No| D[Error 400]
+    D --> Z[Fin]
+    C -->|Sí| E{¿Tipo de aplicación?}
+    
+    E -->|Básica| F[Obtiene configuración del lenguaje]
+    F --> G[Procesa código con regex]
+    G --> H[Marca líneas no migrables<br>cuando no coinciden con regex]
+    H --> I[Genera response]
+    I --> Z
+    
+    E -->|Avanzada| J[Autentica token de IA]
+    J --> K{¿Autenticación exitosa?}
+    K -->|No| L[Error 401]
+    L --> Z
+    K -->|Sí| M[Llama a API IA]
+    M --> N[Espera respuesta]
+    N --> O[Genera response]
+    O --> Z
+
 ---
 
 # Parte 4 - Arquitectura de Despliegue (Opcion B - AWS)
@@ -73,26 +96,26 @@ Para esto se realizaron varias consultas sobre la capa gratuita de AWS y se vio 
 ## 1. Requisitos Previos
 * Angular CLI: 18.2.11
 * Node: 20.11.1
-+ Package Manager: npm 10.2.4
+* Package Manager: npm 10.2.4
 * Una API Key de Google AI Studio (Gemini).
 
 ## 2. Configuracion del Backend
-cd backend
-npm i
+* cd backend
+* npm i
 
 Crear un archivo .env en la raiz del proyecto backend con la clave de Gemini:
-GEMINI_API_KEY=tu_clave_secreta_aqui
-GEMINI_MODEL=gemini-2.5-flash
-PORT=3000
++ GEMINI_API_KEY=tu_clave_secreta_aqui
++ GEMINI_MODEL=gemini-2.5-flash
++ PORT=3000
 
 Inicia el servidor en modo desarrollo:
-npm run dev
+* npm run dev
 
 ## 3. Configuracion del Frontend
 
-cd frontend
-npm i
-ng serve
+* cd frontend
+* npm i
+* ng serve
 
-Ingresar a la ruta:
-http://localhost:4200
++ Ingresar a la ruta:
++ http://localhost:4200
