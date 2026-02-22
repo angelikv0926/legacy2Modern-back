@@ -34,7 +34,7 @@ El backend fue construido con una arquitectura en capas (Layered Architecture) e
 2.  **Mapa de Acciones:** en un inicio como se habia planteado un solo lenguaje de migracion se tenia un `switch` pero al agregar mas funcionalidades y lenguajes este fue aumentando de tamaño lo que hace que a futuro no sea manejable, por esto se usa un diccionario de funciones `O(1)`.
 3.  **Separacion de Responsabilidades:** Division de Rutas, Controladores, Servicios.
 
-``mermaid
+```mermaid
 graph TD
     A[Envía solicitud] --> B[Recibe solicitud]
     B --> C{¿TPS ≤ 5?}
@@ -56,7 +56,7 @@ graph TD
     M --> N[Espera respuesta]
     N --> O[Genera response]
     O --> Z
-
+```
 ---
 
 # Parte 4 - Arquitectura de Despliegue (Opcion B - AWS)
