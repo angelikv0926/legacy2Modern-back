@@ -35,27 +35,34 @@ El backend fue construido con una arquitectura en capas (Layered Architecture) e
 3.  **Separacion de Responsabilidades:** Division de Rutas, Controladores, Servicios.
 
 ```mermaid
-graph TD
-    A[Envía solicitud] --> B[Recibe solicitud]
-    B --> C{¿TPS ≤ 5?}
-    C -->|No| D[Error 400]
-    D --> Z[Fin]
-    C -->|Sí| E{¿Tipo de aplicación?}
+graph LR
+    %% Inicio y validaciones iniciales
+    A([Recibe solicitud]) --&gt; C{¿TPS ≤ 5?}
+    C --&gt;|No| D[Error 429/400] --&gt; Z([Fin])
+    C --&gt;|Sí| E{¿Motor?}
     
-    E -->|Básica| F[Obtiene configuración del lenguaje]
-    F --> G[Procesa código con regex]
-    G --> H[Marca líneas no migrables<br>cuando no coinciden con regex]
-    H --> I[Genera response]
-    I --> Z
+    %% Agrupamos el motor básico para ahorrar espacio
+    subgraph Motor Básico [Camino Regex]
+        F[Carga Config] --&gt; G[Aplica Regex] 
+        G --&gt; H[Marca Warnings] 
+        H --&gt; I[Genera Response]
+    end
     
-    E -->|Avanzada| J[Autentica token de IA]
-    J --> K{¿Autenticación exitosa?}
-    K -->|No| L[Error 401]
-    L --> Z
-    K -->|Sí| M[Llama a API IA]
-    M --> N[Espera respuesta]
-    N --> O[Genera response]
-    O --> Z
+    %% Agrupamos el motor avanzado
+    subgraph Motor Avanzado [Camino Inteligencia Artificial]
+        J[Valida Token] --&gt; K{¿Token OK?}
+        K --&gt;|No| L[Error 401]
+        K --&gt;|Sí| M[Llama API IA y Espera] --&gt; O[Genera Response]
+    end
+    
+    %% Conexiones desde la decisión
+    E --&gt;|Básica| F
+    E --&gt;|Avanzada| J
+    
+    %% Conexiones hacia el final
+    I --&gt; Z
+    L --&gt; Z
+    O --&gt; Z
 ```
 ---
 
