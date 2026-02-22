@@ -36,30 +36,29 @@ El backend fue construido con una arquitectura en capas (Layered Architecture) e
 
 ```mermaid
 graph LR
-    %% Inicio y validaciones iniciales
-    A([Recibe solicitud]) --&gt; C{&quot;¿TPS ≤ 5?&quot;}
-    C --&gt;|No| D[Error 429/400] --&gt; Z([Fin])
-    C --&gt;|Sí| E{&quot;¿Motor?&quot;}
+    A([Recibe solicitud]) --&gt; C{&quot;TPS &lt;= 5?&quot;}
     
-    %% Agrupamos el motor básico para ahorrar espacio
-    subgraph Motor_Basico [Camino Regex]
+    C --&gt;|No| D[Error 429 / 400]
+    D --&gt; Z([Fin])
+    
+    C --&gt;|Si| E{&quot;¿Tipo de Motor?&quot;}
+    
+    subgraph Basico [Camino Regex]
         F[Carga Config] --&gt; G[Aplica Regex] 
         G --&gt; H[Marca Warnings] 
         H --&gt; I[Genera Response]
     end
     
-    %% Agrupamos el motor avanzado
-    subgraph Motor_Avanzado [Camino Inteligencia Artificial]
+    subgraph Avanzado [Camino Inteligencia Artificial]
         J[Valida Token] --&gt; K{&quot;¿Token OK?&quot;}
         K --&gt;|No| L[Error 401]
-        K --&gt;|Sí| M[Llama API IA y Espera] --&gt; O[Genera Response]
+        K --&gt;|Si| M[Llama API IA y Espera]
+        M --&gt; O[Genera Response]
     end
     
-    %% Conexiones desde la decisión
-    E --&gt;|Básica| F
-    E --&gt;|Avanzada| J
+    E --&gt;|Basico| F
+    E --&gt;|Avanzado| J
     
-    %% Conexiones hacia el final
     I --&gt; Z
     L --&gt; Z
     O --&gt; Z
