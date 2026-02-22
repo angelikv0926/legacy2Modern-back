@@ -138,12 +138,12 @@ graph LR
 * Una API Key de Google AI Studio (Gemini).
 
 ## 2. Configuracion del Backend
-* Descargar el repositorio del front localmente
+* Descargar el repositorio del back localmente
   * https://github.com/angelikv0926/legacy2Modern-back
 * npm i
 
 Crear un archivo .env en la raiz del proyecto backend con la clave de Gemini:
-+ GEMINI_API_KEY=tu_clave_secreta_aqui
++ GEMINI_API_KEY=AIXXXclave_secretaXXXX
 + GEMINI_MODEL=gemini-2.5-flash
 + PORT=3000
 
