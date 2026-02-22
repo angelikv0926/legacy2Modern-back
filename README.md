@@ -36,32 +36,30 @@ El backend fue construido con una arquitectura en capas (Layered Architecture) e
 
 ```mermaid
 graph LR
-    A([Recibe solicitud]) --&gt; C{&quot;TPS &lt;= 5?&quot;}
+    A[Envía solicitud] --> B[Recibe solicitud]
+    B --> C{¿TPS ≤ 5?}
+    C -->|No| D[Error 400] --> Z[Fin]
+    C -->|Sí| E{¿Tipo de aplicación?}
     
-    C --&gt;|No| D[Error 429 / 400]
-    D --&gt; Z([Fin])
-    
-    C --&gt;|Si| E{&quot;¿Tipo de Motor?&quot;}
-    
-    subgraph Basico [Camino Regex]
-        F[Carga Config] --&gt; G[Aplica Regex] 
-        G --&gt; H[Marca Warnings] 
-        H --&gt; I[Genera Response]
+    subgraph Proceso_Básico
+        F[Obtiene configuración del lenguaje] --> G[Procesa código con regex]
+        G --> H[Marca líneas no migrables]
+        H --> I[Genera response]
     end
     
-    subgraph Avanzado [Camino Inteligencia Artificial]
-        J[Valida Token] --&gt; K{&quot;¿Token OK?&quot;}
-        K --&gt;|No| L[Error 401]
-        K --&gt;|Si| M[Llama API IA y Espera]
-        M --&gt; O[Genera Response]
+    subgraph Proceso_Avanzado
+        J[Autentica token de IA] --> K{¿Autenticación exitosa?}
+        K -->|No| L[Error 401]
+        K -->|Sí| M[Llama a API IA]
+        M --> N[Espera respuesta]
+        N --> O[Genera response]
     end
     
-    E --&gt;|Basico| F
-    E --&gt;|Avanzado| J
-    
-    I --&gt; Z
-    L --&gt; Z
-    O --&gt; Z
+    E -->|Básica| F
+    E -->|Avanzada| J
+    I --> Z
+    L --> Z
+    O --> Z
 ```
 ---
 
