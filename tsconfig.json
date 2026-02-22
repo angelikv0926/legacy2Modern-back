@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2022",                       /* Define la versión de JavaScript de salida */
+    "module": "commonjs",                     /* Usa CommonJS que es nativo de Node */
+    "rootDir": "./src",                       /* Tu carpeta de código fuente */
+    "outDir": "./dist",                       /* Donde irá el código compilado para producción */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,                           /* Activa la verificación estricta de tipos */
+    "skipLibCheck": true                      /* Ignora errores de tipos en la carpeta node_modules */
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
