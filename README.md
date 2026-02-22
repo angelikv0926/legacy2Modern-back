@@ -40,13 +40,11 @@ graph LR
     B --> C{¿TPS ≤ 5?}
     C -->|No| D[Error 400] --> Z[Fin]
     C -->|Sí| E{¿Tipo de aplicación?}
-    
     subgraph Proceso_Básico
         F[Obtiene configuración del lenguaje] --> G[Procesa código con regex]
         G --> H[Marca líneas no migrables]
         H --> I[Genera response]
     end
-    
     subgraph Proceso_Avanzado
         J[Autentica token de IA] --> K{¿Autenticación exitosa?}
         K -->|No| L[Error 401]
@@ -54,7 +52,6 @@ graph LR
         M --> N[Espera respuesta]
         N --> O[Genera response]
     end
-    
     E -->|Básica| F
     E -->|Avanzada| J
     I --> Z
@@ -72,6 +69,43 @@ Para esto se realizaron varias consultas sobre la capa gratuita de AWS y se vio 
 * **Backend (AWS Lambda + Amazon API Gateway)**: La API de Node.js se ejecuta en Lambda, se usa API Gateway para enrutar hacia la Lambda. Las variables de entorno se guardan de forma segura en configuracion de Lambda.
 * **Observabilidad:** Logs en Amazon CloudWatch.
 
+```mermaid
+graph LR
+    %% Actores Externos
+    User((Usuario\nNavegador))
+    Gemini[Google Gemini\nAPI Externa]
+    %% Capa Frontend
+    subgraph Frontend [Capa de Presentación - AWS]
+        CF[Amazon CloudFront\nCDN HTTPS]
+        S3[(Amazon S3\nBucket Angular)]
+    end
+    %% Capa Backend
+    subgraph Backend [Capa de Lógica - AWS Serverless]
+        API[Amazon API Gateway\nEnrutamiento REST]
+        Lambda((AWS Lambda\nNode.js API))
+    end
+    %% Capa de Observabilidad
+    subgraph Observabilidad [Monitoreo y Logs]
+        CW[Amazon CloudWatch\nLogs de Ejecución]
+    end
+    %% Flujos de Comunicación
+    User -- "1. Pide la Web (HTTPS)" --> CF
+    CF -- "2. Obtiene estáticos" --> S3
+    User -- "3. Petición /api/migrate" --> API
+    API -- "4. Desencadena Función" --> Lambda
+    Lambda -- "5. Llama al LLM" --> Gemini
+    Lambda -. "6. Guarda Logs" .-> CW
+    API -. "6. Métricas de API" .-> CW
+    %% Estilos (Opcional para que se vea bien en GitHub)
+    style Frontend fill:#f9f2ec,stroke:#d2691e,stroke-width:2px
+    style Backend fill:#fcf4f4,stroke:#e05252,stroke-width:2px
+    style Observabilidad fill:#f4f8fc,stroke:#5271e0,stroke-width:2px
+    style CF fill:#ff9900,color:#fff,stroke:#e68a00
+    style S3 fill:#569a31,color:#fff,stroke:#4d8a2c
+    style API fill:#cc2264,color:#fff,stroke:#b31e58
+    style Lambda fill:#ff9900,color:#fff,stroke:#e68a00
+    style CW fill:#cc2264,color:#fff,stroke:#b31e58
+```
 ---
 
 # Parte 5 - Seguridad
@@ -104,7 +138,8 @@ Para esto se realizaron varias consultas sobre la capa gratuita de AWS y se vio 
 * Una API Key de Google AI Studio (Gemini).
 
 ## 2. Configuracion del Backend
-* cd backend
+* Descargar el repositorio del front localmente
+  * https://github.com/angelikv0926/legacy2Modern-back
 * npm i
 
 Crear un archivo .env en la raiz del proyecto backend con la clave de Gemini:
@@ -117,7 +152,8 @@ Inicia el servidor en modo desarrollo:
 
 ## 3. Configuracion del Frontend
 
-* cd frontend
+* Descargar el repositorio del front localmente
+  * https://github.com/angelikv0926/legacy2Modern-front
 * npm i
 * ng serve
 
